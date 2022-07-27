@@ -52,6 +52,6 @@ Languages:
 <br>
 
 ##Images
-<img src="https://ibb.co/JswqWbb">
-<img src="https://ibb.co/6gc74WC">
-<img src=https://ibb.co/QYyGRK1">
+https://ibb.co/JswqWbb
+https://ibb.co/6gc74WC
+https://ibb.co/QYyGRK1
