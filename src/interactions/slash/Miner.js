@@ -1,7 +1,7 @@
 const { InteractionCollector } = require('discord.js');
 const profileModel = require('../../models/profileSchema');
 
-module.exports = class SlashInstagram extends Interaction {
+module.exports = class SlashMiner extends Interaction {
     constructor() {
         super({
             name: "miner",
