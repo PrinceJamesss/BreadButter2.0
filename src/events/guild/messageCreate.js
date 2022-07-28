@@ -47,7 +47,7 @@ module.exports = class messageCreate extends Event {
         )
         //if Channel = Success Channel, react + add points.
         const wEmoji = this.client.emojis.cache.get("871965544738357258");
-        if (message.channel.id === '898401393096945664') {
+        if (message.channel.id === '865991991821074444') {
             if (message.attachments.size > 0) {
                 message.react('871965544738357258')
 

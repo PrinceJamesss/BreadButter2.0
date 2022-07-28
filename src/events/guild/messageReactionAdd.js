@@ -14,7 +14,7 @@ module.exports = class messageReactionAdd extends Event {
     async exec(reaction, interaction, user, guild) {
         
         const wEmoji = this.client.emojis.cache.get('871965544738357258');
-        if (reaction.message.channel.id === '898401393096945664') {
+        if (reaction.message.channel.id === '865991991821074444') {
             if (reaction.message.attachments.size > 0) { if (reaction.emoji.id === '871965544738357258') {
 
                 
