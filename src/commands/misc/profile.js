@@ -75,22 +75,22 @@ module.exports = class Profile extends Command {
                 },
                 {
                     name: "ETH Wallet",
-                    value: `Coming Soon!`,
+                    value: `${profileInfo.ethWallet}`,
                     inline: false,
                 },
                 {
                     name: "Miner",
-                    value: `Coming Soon!`,
+                    value: `${profileInfo.miner}`,
                     inline: false,
                 },
                 {
                     name: "Twitter",
-                    value: `Coming Soon!`,
+                    value: `${profileInfo.twitter}`,
                     inline: false,
                 },
                 {
                     name: "Instagram",
-                    value: `Coming Soon!`,
+                    value: `${profileInfo.instagram}`,
                     inline: false,
                 },
             )

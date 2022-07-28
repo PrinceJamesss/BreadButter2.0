@@ -25,6 +25,7 @@ let Member = interaction.guild.members.cache.get(Target.id)
         userID: searchUser
     }
 );
+let weightedPoints = (profileInfo.reacts / profileInfo.posts)
 let profileEmbed = new MessageEmbed()
     .setColor('#f09719')
     .setTitle(`${profileInfo.userName}`)
@@ -52,12 +53,12 @@ let profileEmbed = new MessageEmbed()
         },
         {
             name: "W Reactions",
-            value: `You currently have ${profileInfo.reacts} W Posts!`,
+            value: `You currently have ${profileInfo.reacts} W Reactions!`,
             inline: false,
         },
         {
             name: "Weighted Points",
-            value: `You currently have ${profileInfo.reacts} Weight Points!`,
+            value: `You currently have ${weightedPoints} Weighted Points!`,
             inline: false,
         },
         {
@@ -72,22 +73,22 @@ let profileEmbed = new MessageEmbed()
         },
         {
             name: "ETH Wallet",
-            value: `Coming Soon!`,
+            value: `${profileInfo.ethWallet}`,
             inline: false,
         },
         {
             name: "Miner",
-            value: `Coming Soon!`,
+            value: `${profileInfo.miner}`,
             inline: false,
         },
         {
             name: "Twitter",
-            value: `Coming Soon!`,
+            value: `${profileInfo.twitter}`,
             inline: false,
         },
         {
             name: "Instagram",
-            value: `Coming Soon!`,
+            value: `${profileInfo.instagram}`,
             inline: false,
         },
     )
