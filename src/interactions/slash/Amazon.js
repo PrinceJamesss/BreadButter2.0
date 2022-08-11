@@ -186,7 +186,7 @@ module.exports = class SlashAmazon extends Interaction {
 
             if (ButtonInteraction.customId === 'two') {
                 ButtonInteraction.deferUpdate()
-                axios.get(`https://api.keepa.com/product?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&stats=60&history=1&days=60&only-live-offers=1&buybox=1`)
+                axios.get(`https://api.keepa.com/product?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&stats=365&history=1&days=365&only-live-offers=1&buybox=1`)
                     .then(response => {
 
                         
@@ -196,9 +196,20 @@ module.exports = class SlashAmazon extends Interaction {
                         let prodImage = prodImages.substring(0, prodImages.indexOf(','));
                         let prodLastUpdateUnix = (prod.lastUpdate + 21564000) * (60)
 
+                        // if (prodStats.min[0] === null) {
+                        //     return interaction.followUp(({ ephemeral: true, content: "Not Enough Price History (Will Update Soon)" }));
+                        // } 
+
+
+                        if (prodStats.min[0] === null) {
+                            var amzLowestPrice = "Not Stocked"
+                            var amzCurrentPrice = "Not Stocked"
+                            var amzMaxPrice = "Not Stocked"
+                            var amzAveragePrice = "Not Stocked"
+                        } else {
                         let amzLowestRaw = (prodStats.min[0][1])
                         let amzLowestTimeRaw = (prodStats.min[0][0] + 21564000) * (60)
-                        if (amzLowestRaw === -1) {
+                        if (amzLowestRaw === null) {
                             var amzLowestPrice = "OOS"
                         } else {
                             var amzLowestPrice = usdFormatter.format(amzLowestRaw / 100)
@@ -225,7 +236,8 @@ module.exports = class SlashAmazon extends Interaction {
                         } else {
                             var amzAveragePrice = usdFormatter.format(amzAverageRaw / 100)
                         }
-
+                    }
+                    
                         let newLowestRaw = prodStats.min[1][1]
                         let newLowestTimeRaw = prodStats.min[1][1]
                         if (newLowestRaw === -1) {
