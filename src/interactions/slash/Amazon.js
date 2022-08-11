@@ -237,7 +237,13 @@ module.exports = class SlashAmazon extends Interaction {
                             var amzAveragePrice = usdFormatter.format(amzAverageRaw / 100)
                         }
                     }
-                    
+        
+                    if (prodStats.min[1] === null) {
+                        var newLowestPrice = "Not Stocked"
+                        var newCurrentPrice = "Not Stocked"
+                        var newMaxPrice = "Not Stocked"
+                        var newAveragePrice = "Not Stocked"
+                    } else {
                         let newLowestRaw = prodStats.min[1][1]
                         let newLowestTimeRaw = prodStats.min[1][1]
                         if (newLowestRaw === -1) {
@@ -267,7 +273,14 @@ module.exports = class SlashAmazon extends Interaction {
                         } else {
                             var newAveragePrice = usdFormatter.format(newAverageRaw / 100)
                         }
-
+                    }
+                    
+                    if (prodStats.min[2] === null) {
+                        var usedLowestPrice = "Not Stocked"
+                        var usedCurrentPrice = "Not Stocked"
+                        var usedMaxPrice = "Not Stocked"
+                        var usedAveragePrice = "Not Stocked"
+                    } else {
                         let usedLowestRaw = prodStats.min[2][1]
                         let usedLowestTimeRaw = prodStats.min[2][1]
                         if (usedLowestRaw === -1) {
@@ -297,6 +310,7 @@ module.exports = class SlashAmazon extends Interaction {
                         } else {
                             var usedAveragePrice = usdFormatter.format(usedAverageRaw / 100)
                         }
+                    }
 
                         let salesRankLowest = prodStats.min[3][1]
                         let salesRankCurrent = prodStats.current[3]
