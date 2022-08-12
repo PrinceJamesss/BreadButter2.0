@@ -20,7 +20,6 @@ module.exports = class SlashAmazon extends Interaction {
         const args = (interaction.options.getString('asin'))
         console.log(args)
         let productURL = `https://www.amazon.com/dp/${args}/`
-
         const usdFormatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -28,64 +27,79 @@ module.exports = class SlashAmazon extends Interaction {
             useGrouping: false
         })
 
-        let startEmbed = new MessageEmbed()
-            .setColor('#f09719')
-            .setTitle('Amazon Information Bot')
-            .setURL(productURL)
-            .setThumbnail('https://images-na.ssl-images-amazon.com/images/G/01/gc/designs/livepreview/a_generic_white_10_us_noto_email_v2016_us-main._CB627448186_.png')
-            .setDescription('What would you like to know about this ASIN?')
-            .setFooter({ text: 'Amazon Information', iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
-            .setTimestamp()
+        axios.get(`https://api.keepa.com/product?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&stats=60&history=1&days=60&only-live-offers=1&buybox=1`)
+            .then(response => {
 
-        const buttons = new MessageActionRow().addComponents(
-            new MessageButton()
-                .setCustomId("one")
-                .setLabel("Product Information")
-                .setStyle("PRIMARY"),
-            new MessageButton()
-                .setCustomId("two")
-                .setLabel("Price History")
-                .setStyle("PRIMARY"),
-            new MessageButton()
-                .setCustomId("three")
-                .setLabel("Send Graphs")
-                .setStyle("SUCCESS"),
-            new MessageButton()
-                .setLabel("View Product")
-                .setStyle("LINK")
-                .setURL(productURL + ('?linkCode=ml1&tag=adamzon-20')),
-        );
+                if (response.data.tokensLeft < 10) {
+                    interaction.editReply({ ephemeral: true, contents: "You are being rate limited. Please wait and try again." })
+                }
 
-        const backButton = new MessageActionRow().addComponents(
-            new MessageButton()
-                .setCustomId("back")
-                .setLabel("Back")
-                .setStyle("DANGER")
-        )
+                const prod = response.data.products[0]
+                const prodStats = prod.stats
+                const buyBoxRawPrice = (prodStats.buyBoxPrice)
+                const prodImages = prod.imagesCSV
+                const prodImage = prodImages.substring(0, prodImages.indexOf(','));
+                const prodTitle = prod.title
+                const prodSize = prod.size
+                const prodModel = prod.model
+                const prodGroup = prod.productGroup
+                const prodBrand = prod.brand
+                const prodFBAPickPackRaw = (prod.fbaFees.pickAndPackFee / 100).toString()
+                const prodLastUpdateUnix = (prod.lastUpdate + 21564000) * (60)
+                const prodAmazonStock = prod.availabilityAmazon
+                const prodUPCList = prod.upcList
+                const prodDiscount = prod.coupon
+                const prodFBAPickPack = (usdFormatter.format(prodFBAPickPackRaw));
+                const tokensLeft = response.data.tokensLeft
+                const tokensConsumed = response.data.tokensConsumed
 
-        this.client.once('interactionCreate', async ButtonInteraction => {
-            if (!ButtonInteraction.isButton()) return
+                let startEmbed = new MessageEmbed()
+                    .setColor('#f09719')
+                    .setTitle('Amazon Information Bot')
+                    .setURL(productURL)
+                    .setThumbnail('https://m.media-amazon.com/images/I/' + prodImage)
+                    .setDescription('What would you like to know about this ASIN?')
+                    .addFields(
+                        {
+                            name: "Tokens Used",
+                            value: tokensConsumed.toString(),
+                            inline: true,
+                        },
+                        {
+                            name: "Tokens Left",
+                            value: tokensLeft.toString(),
+                            inline: true,
+                        },
+                    )
+                    .setFooter({ text: 'Amazon Information', iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
+                    .setTimestamp()
 
-            if (ButtonInteraction.customId === 'one') {
-                ButtonInteraction.deferUpdate()
-                axios.get(`https://api.keepa.com/product?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&stats=60&history=1&days=60&only-live-offers=1&buybox=1`)
-                    .then(response => {
+                const buttons = new MessageActionRow().addComponents(
+                    new MessageButton()
+                        .setCustomId("one")
+                        .setLabel("Product Information")
+                        .setStyle("PRIMARY"),
+                    new MessageButton()
+                        .setCustomId("two")
+                        .setLabel("Price History")
+                        .setStyle("PRIMARY"),
+                    new MessageButton()
+                        .setCustomId("three")
+                        .setLabel("Send Graphs")
+                        .setStyle("SUCCESS"),
+                    new MessageButton()
+                        .setLabel("View Product")
+                        .setStyle("LINK")
+                        .setURL(productURL + ('?linkCode=ml1&tag=adamzon-20')),
+                );
 
-                        const prod = response.data.products[0]
-                        let buyBoxRawPrice = (prod.stats.buyBoxPrice)
-                        let prodImages = prod.imagesCSV
-                        let prodImage = prodImages.substring(0, prodImages.indexOf(','));
-                        let prodTitle = prod.title
-                        let prodSize = prod.size
-                        let prodModel = prod.model
-                        let prodGroup = prod.productGroup
-                        let prodBrand = prod.brand
-                        let prodFBAPickPackRaw = (prod.fbaFees.pickAndPackFee / 100).toString()
-                        let prodLastUpdateUnix = (prod.lastUpdate + 21564000) * (60)
-                        let prodAmazonStock = prod.availabilityAmazon
-                        let prodUPCList = prod.upcList
-                        let prodDiscount = prod.coupon
-                        let prodFBAPickPack = (usdFormatter.format(prodFBAPickPackRaw));
+                interaction.reply({ ephemeral: true, embeds: [startEmbed], components: [buttons] });
+
+                this.client.on('interactionCreate', async ButtonInteraction => {
+                    if (!ButtonInteraction.isButton()) return
+
+                    if (ButtonInteraction.customId === 'one') {
+                        ButtonInteraction.deferUpdate()
 
                         if (prodAmazonStock === 0) {
                             var stockedByAmz = "True"
@@ -179,27 +193,12 @@ module.exports = class SlashAmazon extends Interaction {
                             )
                             .setFooter({ text: `Last Updated  - ${Date(prodLastUpdateUnix)}`, iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
 
-                        interaction.followUp({ ephemeral: true, embeds: [infoEmbed] });
+                        return interaction.editReply({ ephemeral: true, embeds: [infoEmbed], components: [buttons] });
 
-                    })
-            }
+                    }
 
-            if (ButtonInteraction.customId === 'two') {
-                ButtonInteraction.deferUpdate()
-                axios.get(`https://api.keepa.com/product?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&stats=365&history=1&days=365&only-live-offers=1&buybox=1`)
-                    .then(response => {
-
-                        
-                        const prod = response.data.products[0]
-                        const prodStats = prod.stats
-                        let prodImages = prod.imagesCSV
-                        let prodImage = prodImages.substring(0, prodImages.indexOf(','));
-                        let prodLastUpdateUnix = (prod.lastUpdate + 21564000) * (60)
-
-                        // if (prodStats.min[0] === null) {
-                        //     return interaction.followUp(({ ephemeral: true, content: "Not Enough Price History (Will Update Soon)" }));
-                        // } 
-
+                    if (ButtonInteraction.customId === 'two') {
+                        ButtonInteraction.deferUpdate()
 
                         if (prodStats.min[0] === null) {
                             var amzLowestPrice = "Not Stocked"
@@ -207,110 +206,110 @@ module.exports = class SlashAmazon extends Interaction {
                             var amzMaxPrice = "Not Stocked"
                             var amzAveragePrice = "Not Stocked"
                         } else {
-                        let amzLowestRaw = (prodStats.min[0][1])
-                        let amzLowestTimeRaw = (prodStats.min[0][0] + 21564000) * (60)
-                        if (amzLowestRaw === null) {
-                            var amzLowestPrice = "OOS"
-                        } else {
-                            var amzLowestPrice = usdFormatter.format(amzLowestRaw / 100)
+                            let amzLowestRaw = (prodStats.min[0][1])
+                            let amzLowestTimeRaw = (prodStats.min[0][0] + 21564000) * (60)
+                            if (amzLowestRaw === null) {
+                                var amzLowestPrice = "OOS"
+                            } else {
+                                var amzLowestPrice = usdFormatter.format(amzLowestRaw / 100)
+                            }
+
+                            let amzCurrentRaw = (prodStats.current[0])
+                            if (amzCurrentRaw === -1) {
+                                var amzCurrentPrice = "OOS"
+                            } else {
+                                var amzCurrentPrice = usdFormatter.format(amzLowestRaw / 100)
+                            }
+
+                            let amzMaxRaw = (prodStats.max[0][1])
+                            let amzMaxTimeRaw = (prodStats.max[0][0])
+                            if (amzMaxRaw === -1) {
+                                var amzMaxPrice = "OOS"
+                            } else {
+                                var amzMaxPrice = usdFormatter.format(amzMaxRaw / 100)
+                            }
+
+                            let amzAverageRaw = prodStats.avg90[0]
+                            if (amzAverageRaw === -1) {
+                                var amzAveragePrice = "OOS"
+                            } else {
+                                var amzAveragePrice = usdFormatter.format(amzAverageRaw / 100)
+                            }
                         }
 
-                        let amzCurrentRaw = (prodStats.current[0])
-                        if (amzCurrentRaw === -1) {
-                            var amzCurrentPrice = "OOS"
+                        if (prodStats.min[1] === null) {
+                            var newLowestPrice = "Not Stocked"
+                            var newCurrentPrice = "Not Stocked"
+                            var newMaxPrice = "Not Stocked"
+                            var newAveragePrice = "Not Stocked"
                         } else {
-                            var amzCurrentPrice = usdFormatter.format(amzLowestRaw / 100)
+                            let newLowestRaw = prodStats.min[1][1]
+                            let newLowestTimeRaw = prodStats.min[1][1]
+                            if (newLowestRaw === -1) {
+                                var newLowestPrice = "OOS"
+                            } else {
+                                var newLowestPrice = usdFormatter.format(newLowestRaw / 100)
+                            }
+
+                            let newCurrentRaw = prodStats.current[1]
+                            if (newCurrentRaw === -1) {
+                                var newCurrentPrice = "OOS"
+                            } else {
+                                newCurrentPrice = usdFormatter.format(newCurrentRaw / 100)
+                            }
+
+                            let newMaxRaw = (prodStats.max[1][1])
+                            let newMaxTimeRaw = (prodStats.max[1][0])
+                            if (newMaxRaw === -1) {
+                                var newMaxPrice = "OOS"
+                            } else {
+                                var newMaxPrice = usdFormatter.format(newMaxRaw / 100)
+                            }
+
+                            let newAverageRaw = prodStats.avg90[1]
+                            if (newAverageRaw === -1) {
+                                var newAveragePrice = "OOS"
+                            } else {
+                                var newAveragePrice = usdFormatter.format(newAverageRaw / 100)
+                            }
                         }
 
-                        let amzMaxRaw = (prodStats.max[0][1])
-                        let amzMaxTimeRaw = (prodStats.max[0][0])
-                        if (amzMaxRaw === -1) {
-                            var amzMaxPrice = "OOS"
+                        if (prodStats.min[2] === null) {
+                            var usedLowestPrice = "Not Stocked"
+                            var usedCurrentPrice = "Not Stocked"
+                            var usedMaxPrice = "Not Stocked"
+                            var usedAveragePrice = "Not Stocked"
                         } else {
-                            var amzMaxPrice = usdFormatter.format(amzMaxRaw / 100)
-                        }
+                            let usedLowestRaw = prodStats.min[2][1]
+                            let usedLowestTimeRaw = prodStats.min[2][1]
+                            if (usedLowestRaw === -1) {
+                                var usedLowestPrice = "OOS"
+                            } else {
+                                var usedLowestPrice = usdFormatter.format(usedLowestRaw / 100)
+                            }
 
-                        let amzAverageRaw = prodStats.avg90[0]
-                        if (amzAverageRaw === -1) {
-                            var amzAveragePrice = "OOS"
-                        } else {
-                            var amzAveragePrice = usdFormatter.format(amzAverageRaw / 100)
-                        }
-                    }
-        
-                    if (prodStats.min[1] === null) {
-                        var newLowestPrice = "Not Stocked"
-                        var newCurrentPrice = "Not Stocked"
-                        var newMaxPrice = "Not Stocked"
-                        var newAveragePrice = "Not Stocked"
-                    } else {
-                        let newLowestRaw = prodStats.min[1][1]
-                        let newLowestTimeRaw = prodStats.min[1][1]
-                        if (newLowestRaw === -1) {
-                            var newLowestPrice = "OOS"
-                        } else {
-                            var newLowestPrice = usdFormatter.format(newLowestRaw / 100)
-                        }
+                            let usedCurrentRaw = prodStats.current[2]
+                            if (usedCurrentRaw === -1) {
+                                var usedCurrentPrice = "OOS"
+                            } else {
+                                usedCurrentPrice = usdFormatter.format(usedCurrentRaw / 100)
+                            }
 
-                        let newCurrentRaw = prodStats.current[1]
-                        if (newCurrentRaw === -1) {
-                            var newCurrentPrice = "OOS"
-                        } else {
-                            newCurrentPrice = usdFormatter.format(newCurrentRaw / 100)
-                        }
+                            let usedMaxRaw = (prodStats.max[2][1])
+                            let usedMaxTimeRaw = (prodStats.max[2][0])
+                            if (usedMaxRaw === -1) {
+                                var usedMaxPrice = "OOS"
+                            } else {
+                                var usedMaxPrice = usdFormatter.format(usedMaxRaw / 100)
+                            }
 
-                        let newMaxRaw = (prodStats.max[1][1])
-                        let newMaxTimeRaw = (prodStats.max[1][0])
-                        if (newMaxRaw === -1) {
-                            var newMaxPrice = "OOS"
-                        } else {
-                            var newMaxPrice = usdFormatter.format(newMaxRaw / 100)
+                            let usedAverageRaw = prodStats.avg90[2]
+                            if (usedAverageRaw === -1) {
+                                var usedAveragePrice = "OOS"
+                            } else {
+                                var usedAveragePrice = usdFormatter.format(usedAverageRaw / 100)
+                            }
                         }
-
-                        let newAverageRaw = prodStats.avg90[1]
-                        if (newAverageRaw === -1) {
-                            var newAveragePrice = "OOS"
-                        } else {
-                            var newAveragePrice = usdFormatter.format(newAverageRaw / 100)
-                        }
-                    }
-                    
-                    if (prodStats.min[2] === null) {
-                        var usedLowestPrice = "Not Stocked"
-                        var usedCurrentPrice = "Not Stocked"
-                        var usedMaxPrice = "Not Stocked"
-                        var usedAveragePrice = "Not Stocked"
-                    } else {
-                        let usedLowestRaw = prodStats.min[2][1]
-                        let usedLowestTimeRaw = prodStats.min[2][1]
-                        if (usedLowestRaw === -1) {
-                            var usedLowestPrice = "OOS"
-                        } else {
-                            var usedLowestPrice = usdFormatter.format(usedLowestRaw / 100)
-                        }
-
-                        let usedCurrentRaw = prodStats.current[2]
-                        if (usedCurrentRaw === -1) {
-                            var usedCurrentPrice = "OOS"
-                        } else {
-                            usedCurrentPrice = usdFormatter.format(usedCurrentRaw / 100)
-                        }
-
-                        let usedMaxRaw = (prodStats.max[2][1])
-                        let usedMaxTimeRaw = (prodStats.max[2][0])
-                        if (usedMaxRaw === -1) {
-                            var usedMaxPrice = "OOS"
-                        } else {
-                            var usedMaxPrice = usdFormatter.format(usedMaxRaw / 100)
-                        }
-
-                        let usedAverageRaw = prodStats.avg90[2]
-                        if (usedAverageRaw === -1) {
-                            var usedAveragePrice = "OOS"
-                        } else {
-                            var usedAveragePrice = usdFormatter.format(usedAverageRaw / 100)
-                        }
-                    }
 
                         let salesRankLowest = prodStats.min[3][1]
                         let salesRankCurrent = prodStats.current[3]
@@ -328,20 +327,20 @@ module.exports = class SlashAmazon extends Interaction {
                         Current   :: ${newCurrentPrice}
                         Highest   :: ${newMaxPrice}
                         Average   :: ${newAveragePrice}
-                      `;         
+                      `;
                         const usedStats = stripIndent`
                         Lowest    :: ${usedLowestPrice}
                         Current   :: ${usedCurrentPrice}
                         Highest   :: ${usedMaxPrice}
                         Average   :: ${usedAveragePrice}
-                      `; 
-                      const salesRankStats = stripIndent`
+                      `;
+                        const salesRankStats = stripIndent`
                         Lowest    :: #${salesRankLowest}
                         Current   :: #${salesRankCurrent}
                         Highest   :: #${salesRankMax}
                         Average   :: #${salesRankAvg}
-                      `;             
-        
+                      `;
+
                         let priceHistoryEmbed = new MessageEmbed()
                             .setColor('#f09719')
                             .setTitle('Product Pricing History')
@@ -372,29 +371,34 @@ module.exports = class SlashAmazon extends Interaction {
                             )
                             .setFooter({ text: `Last Updated  - ${Date(prodLastUpdateUnix)}`, iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
 
-                        interaction.followUp({ ephemeral: true, embeds: [priceHistoryEmbed] });
+                        interaction.editReply({ ephemeral: true, embeds: [priceHistoryEmbed] });
+                    }
 
-                    })
+                    if (ButtonInteraction.customId === 'three') {
+                        ButtonInteraction.deferUpdate()
 
+                        let graphEmbed = new MessageEmbed()
+                            .setColor('#f09719')
+                            .setTitle('Product Graphs')
+                            .setThumbnail('https://m.media-amazon.com/images/I/' + prodImage)
+                            .addFields(
+                                {
+                                    name: "Tokens Used",
+                                    value: "1",
+                                    inline: true,
+                                },
+                                {
+                                    name: "Tokens Left",
+                                    value: (tokensLeft - 1).toString(),
+                                    inline: true,
+                                },
+                            )
+                            .setImage(`https://api.keepa.com/graphimage?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&amazon=1&new=1&fba=1&salesrank=1&bb=1&fbm=1&ld=1&width=800&height=500&wd=1&range=60&cAmazon=000000&cBB=ffff00`)
+                            .setFooter({ text: `Graph View - ${interaction.user.username} - Click Photo To Enlarge`, iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
 
-            }
-
-            if (ButtonInteraction.customId === 'three') {
-                ButtonInteraction.deferUpdate()
-                let amazonGraphImg = `https://api.keepa.com/graphimage?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&amazon=1`
-                let fbaGraphImg = `https://api.keepa.com/graphimage?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&fba=1`
-                let bbGraphImg = `https://api.keepa.com/graphimage?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&bb=1`
-                let salesRankGraphImg = `https://api.keepa.com/graphimage?key=eo0f3ddj40qicnvd6e868rpfno3ddd305imbe7lcmml66md4g14aej03a7id9reh&domain=1&asin=${args}&salesrank=1`
-                await interaction.followUp({ ephemeral: true, content: amazonGraphImg });
-                await interaction.followUp({ ephemeral: true, content: fbaGraphImg });
-                await interaction.followUp({ ephemeral: true, content: bbGraphImg });
-                await interaction.followUp({ ephemeral: true, content: salesRankGraphImg,});
-            }
-
-        })
-
-        await interaction.reply({ ephemeral: true, embeds: [startEmbed], components: [buttons] });
-
-
+                        interaction.editReply({ ephemeral: true, embeds: [graphEmbed] });
+                    }
+                })
+            })
     }
 }

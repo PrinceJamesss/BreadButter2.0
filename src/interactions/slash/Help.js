@@ -1,4 +1,6 @@
 const { embed, removeDuplicates, formatPerms } = require('../../utils/Utils');
+const packFile = require('../../../package.json')
+const packVersion = packFile.version
 
 module.exports = class SlashHelp extends Interaction {
     constructor() {
@@ -17,7 +19,8 @@ module.exports = class SlashHelp extends Interaction {
             emb = embed()
                 .setColor(interaction.guild.members.cache.get(interaction.user.id).displayHexColor)
                 .setTitle('Help panel')
-                .setThumbnail(interaction.guild.iconURL({ dynamic: true }));
+                .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
+                .setFooter({ text: `Help - ${interaction.user.username} - Version ${packVersion}`, iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
             const categories = removeDuplicates(this.client.commands.map(cmd => cmd.category));
             for (const category of categories) {
                 const dir = this.client.commands.filter(cmd => cmd.category === category);
@@ -36,7 +39,9 @@ module.exports = class SlashHelp extends Interaction {
                     `**Permission:** ${cmd.memberPerms.toArray().length > 0 ? `${cmd.memberPerms.toArray().map((perm) => `\`${formatPerms(perm)}\``).join(', ')}` : `No permission required.`}`,
                     `**Cooldown:** ${cmd.cooldown / 1000} seconds`,
                     `**Usage:** \`${`${data.guild?.prefix}${cmd.name} ${cmd.usage || ''}`.trim()}\``,
-                ].join('\n'));
+                ].join('\n'))
+                .setFooter({ text: `Help - ${interaction.user.username} - Version ${packVersion}`, iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' });
+                
             return interaction.reply({ ephemeral: true, embeds: [emb] });
         }
     }
