@@ -286,6 +286,17 @@ module.exports = class Roles extends Command {
                     return interaction.followUp({ ephemeral: true, content: 'We Have Removed Crocs Role' })
                 }
             }
+            //Seasonal
+            if (interaction.values == 'Crocs') {
+                await interaction.deferUpdate();
+                if (!member.roles.cache.has("1009924221914333226")) {
+                    await member.roles.add('1009924221914333226')
+                    return interaction.followUp({ ephemeral: true, content: 'We Have Added Seasonal Role' })
+                } else if (member.roles.cache.has("1009924221914333226")) {
+                    await member.roles.remove('1009924221914333226')
+                    return interaction.followUp({ ephemeral: true, content: 'We Have Removed Seasonal Role' })
+                }
+            }
         })
 
     }

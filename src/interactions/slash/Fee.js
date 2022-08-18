@@ -12,6 +12,7 @@ module.exports = class SlashFee extends Interaction {
     }
     async exec(interaction) {
         
+        console.log('=' * 2)
         const numberArgs = (interaction.options.getString('amount'))
         let feesEmbed = embed()
         .setColor('#000000')
