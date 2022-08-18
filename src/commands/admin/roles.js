@@ -287,7 +287,7 @@ module.exports = class Roles extends Command {
                 }
             }
             //Seasonal
-            if (interaction.values == 'Crocs') {
+            if (interaction.values == 'Seasonal') {
                 await interaction.deferUpdate();
                 if (!member.roles.cache.has("1009924221914333226")) {
                     await member.roles.add('1009924221914333226')
