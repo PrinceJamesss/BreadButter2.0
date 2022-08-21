@@ -21,7 +21,7 @@ module.exports = class interactionCreate extends Event {
             if (!interaction.isSelectMenu()) return;
 
             //In-Store
-            if (interaction.values == 'In Store') {
+            if (interaction.values == 'In-Store') {
                 await interaction.deferUpdate();
                 if (!member.roles.cache.has("1010734770466078830")) {
                     await member.roles.add('1010734770466078830')
