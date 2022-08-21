@@ -21,14 +21,14 @@ module.exports = class interactionCreate extends Event {
             if (!interaction.isSelectMenu()) return;
 
             //In-Store
-            if (interaction.values == 'Seasonal') {
+            if (interaction.values == 'In Store') {
                 await interaction.deferUpdate();
-                if (!member.roles.cache.has("1001867112899420300")) {
-                    await member.roles.add('1001867112899420300')
-                    return interaction.followUp({ ephemeral: true, content: 'We Have Added Seasonal Role' })
-                } else if (member.roles.cache.has("1001867112899420300")) {
-                    await member.roles.remove('1001867112899420300')
-                    return interaction.followUp({ ephemeral: true, content: 'We Have Removed Seasonal Role' })
+                if (!member.roles.cache.has("1010734770466078830")) {
+                    await member.roles.add('1010734770466078830')
+                    return interaction.followUp({ ephemeral: true, content: 'We Have Added In Store Role' })
+                } else if (member.roles.cache.has("1010734770466078830")) {
+                    await member.roles.remove('1010734770466078830')
+                    return interaction.followUp({ ephemeral: true, content: 'We Have Removed In Store Role' })
                 }
             }
             //BOLO
