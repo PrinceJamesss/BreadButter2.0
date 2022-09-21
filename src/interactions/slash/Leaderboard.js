@@ -17,7 +17,7 @@ module.exports = class SlashLeaderboard extends Interaction {
         const chartData = {
             labels: [leaderboardInfo[0].userName, leaderboardInfo[1].userName, leaderboardInfo[2].userName, leaderboardInfo[3].userName, leaderboardInfo[4].userName, leaderboardInfo[5].userName, leaderboardInfo[6].userName, leaderboardInfo[7].userName, leaderboardInfo[8].userName, leaderboardInfo[9].userName],
             datasets: [{
-                data: [(leaderboardInfo[0].reacts / leaderboardInfo[0].posts), (leaderboardInfo[1].reacts / leaderboardInfo[1].posts), (leaderboardInfo[2].reacts / leaderboardInfo[2].posts), (leaderboardInfo[3].reacts / leaderboardInfo[3].posts), (leaderboardInfo[4].reacts / leaderboardInfo[4].posts), (leaderboardInfo[5].reacts / leaderboardInfo[5].posts), (leaderboardInfo[6].reacts / leaderboardInfo[6].posts), (leaderboardInfo[7].reacts / leaderboardInfo[7].posts), (leaderboardInfo[8].reacts / leaderboardInfo[8].posts), (leaderboardInfo[9].reacts / leaderboardInfo[9].posts)],
+                data: [Math.round((leaderboardInfo[0].reacts / leaderboardInfo[0].posts) * 100) / 100, Math.round((leaderboardInfo[1].reacts / leaderboardInfo[1].posts) * 100) / 100, Math.round((leaderboardInfo[2].reacts / leaderboardInfo[2].posts) * 100) / 100, Math.round((leaderboardInfo[3].reacts / leaderboardInfo[3].posts) * 100) / 100, Math.round((leaderboardInfo[4].reacts / leaderboardInfo[4].posts) * 100) / 100, Math.round((leaderboardInfo[5].reacts / leaderboardInfo[5].posts) * 100) / 100, Math.round((leaderboardInfo[6].reacts / leaderboardInfo[6].posts) * 100) / 100, Math.round((leaderboardInfo[7].reacts / leaderboardInfo[7].posts) * 100) / 100, Math.round((leaderboardInfo[8].reacts / leaderboardInfo[8].posts) * 100) / 100, Math.round((leaderboardInfo[9].reacts / leaderboardInfo[9].posts) * 100) / 100],
                 fill: true,
                 borderColor: 'rgb(255, 255, 51)',
                 tension: 0.1,
@@ -25,7 +25,7 @@ module.exports = class SlashLeaderboard extends Interaction {
         };
 
         const chart = {
-            type: 'donut',
+            type: 'bar',
             data: chartData,
             options: {},
         }
@@ -42,21 +42,21 @@ module.exports = class SlashLeaderboard extends Interaction {
             .addFields(
                 {
                     name: "🎉 __FIRST PLACE__ 🎉",
-                    value: `**${leaderboardInfo[0].userName}** | Points: **${leaderboardInfo[0].reacts / leaderboardInfo[0].posts}**`,
+                    value: `**${leaderboardInfo[0].userName}** | Points: **${Math.round((leaderboardInfo[0].reacts / leaderboardInfo[0].posts) * 100) / 100}**`,
                     inline: false,
                 },
                 {
                     name: "__Current Leaders__",
                     value: `
-                    **${leaderboardInfo[1].userName}** | Points: **${leaderboardInfo[1].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[2].userName}** | Points: **${leaderboardInfo[2].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[3].userName}** | Points: **${leaderboardInfo[3].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[4].userName}** | Points: **${leaderboardInfo[4].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[5].userName}** | Points: **${leaderboardInfo[5].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[6].userName}** | Points: **${leaderboardInfo[6].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[7].userName}** | Points: **${leaderboardInfo[7].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[8].userName}** | Points: **${leaderboardInfo[8].reacts / leaderboardInfo[1].posts}**
-                    **${leaderboardInfo[9].userName}** | Points: **${leaderboardInfo[9].reacts / leaderboardInfo[1].posts}**
+                    **${leaderboardInfo[1].userName}** | Points: **${Math.round((leaderboardInfo[1].reacts / leaderboardInfo[1].posts) * 100) / 100}**
+                    **${leaderboardInfo[2].userName}** | Points: **${Math.round((leaderboardInfo[2].reacts / leaderboardInfo[2].posts) * 100) / 100}**
+                    **${leaderboardInfo[3].userName}** | Points: **${Math.round((leaderboardInfo[3].reacts / leaderboardInfo[3].posts) * 100) / 100}**
+                    **${leaderboardInfo[4].userName}** | Points: **${Math.round((leaderboardInfo[4].reacts / leaderboardInfo[4].posts) * 100) / 100}**
+                    **${leaderboardInfo[5].userName}** | Points: **${Math.round((leaderboardInfo[5].reacts / leaderboardInfo[5].posts) * 100) / 100}**
+                    **${leaderboardInfo[6].userName}** | Points: **${Math.round((leaderboardInfo[6].reacts / leaderboardInfo[6].posts) * 100) / 100}**
+                    **${leaderboardInfo[7].userName}** | Points: **${Math.round((leaderboardInfo[7].reacts / leaderboardInfo[7].posts) * 100) / 100}**
+                    **${leaderboardInfo[8].userName}** | Points: **${Math.round((leaderboardInfo[8].reacts / leaderboardInfo[8].posts) * 100) / 100}**
+                    **${leaderboardInfo[9].userName}** | Points: **${Math.round((leaderboardInfo[9].reacts / leaderboardInfo[9].posts) * 100) / 100}**
                     `,
                     inline: false,
                 },
