@@ -17,7 +17,7 @@ module.exports = class SlashHelp extends Interaction {
         let emb;
         if (!cmd) {
             emb = embed()
-                .setColor(interaction.guild.members.cache.get(interaction.user.id).displayHexColor)
+                .setColor('#f09719')
                 .setTitle('Help panel')
                 .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
                 .setFooter({ text: `Help - ${interaction.user.username} - Version ${packVersion}`, iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
@@ -29,7 +29,7 @@ module.exports = class SlashHelp extends Interaction {
             return interaction.reply({ ephemeral: true, embeds: [emb] });
         } else {
             emb = embed()
-                .setColor(interaction.guild.members.cache.get(interaction.user.id).displayHexColor)
+                .setColor('#f09719')
                 .setTitle('Help panel')
                 .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
                 .setDescription([

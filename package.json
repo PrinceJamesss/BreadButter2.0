@@ -1,6 +1,6 @@
 {
   "name": "bread-butter-2.0",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Bread and Butter Discord Helper 2.0",
   "main": "index.js",
   "scripts": {

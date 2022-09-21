@@ -72,6 +72,16 @@ module.exports = class messageCreate extends Event {
             }
         }
 
+        //Still Working On This, It's To Filter Cook Channels
+        
+        // if(message.channel.id === '905673829534302210') {
+        
+        //     if (!message.content.includes("https://")) {
+        //           message.delete();
+        //           message.channel.send( { ephemeral: true, content: "Test" } )
+        //       }
+        // }
+
 
         /* If author is bot or if message isn't in guild return */
         if (message.author.bot || !message.guild) return;

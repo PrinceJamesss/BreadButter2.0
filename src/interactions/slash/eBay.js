@@ -97,7 +97,7 @@ module.exports = class SlashEbay extends Interaction {
 
                 // Create Discord Embed For Sold Products  
                 let soldEmbed = new MessageEmbed()
-                    .setColor('#000000')
+                    .setColor('#f09719')
                     .setTitle("Search Results")
                     .setDescription("```" + "Keywords: " + args + "```")
                     .addFields(
