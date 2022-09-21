@@ -14,24 +14,24 @@ module.exports = class SlashLeaderboard extends Interaction {
         let leaderboardInfo = await profileModel.find().sort([['points', 'descending']]).exec();
         console.log(leaderboardInfo[0])
 
-        const chartData = {
-            labels: [leaderboardInfo[0].userName, leaderboardInfo[1].userName, leaderboardInfo[2].userName, leaderboardInfo[3].userName, leaderboardInfo[4].userName, leaderboardInfo[5].userName, leaderboardInfo[6].userName, leaderboardInfo[7].userName, leaderboardInfo[8].userName, leaderboardInfo[9].userName],
-            datasets: [{
-                data: [Math.round((leaderboardInfo[0].reacts / leaderboardInfo[0].posts) * 100) / 100, Math.round((leaderboardInfo[1].reacts / leaderboardInfo[1].posts) * 100) / 100, Math.round((leaderboardInfo[2].reacts / leaderboardInfo[2].posts) * 100) / 100, Math.round((leaderboardInfo[3].reacts / leaderboardInfo[3].posts) * 100) / 100, Math.round((leaderboardInfo[4].reacts / leaderboardInfo[4].posts) * 100) / 100, Math.round((leaderboardInfo[5].reacts / leaderboardInfo[5].posts) * 100) / 100, Math.round((leaderboardInfo[6].reacts / leaderboardInfo[6].posts) * 100) / 100, Math.round((leaderboardInfo[7].reacts / leaderboardInfo[7].posts) * 100) / 100, Math.round((leaderboardInfo[8].reacts / leaderboardInfo[8].posts) * 100) / 100, Math.round((leaderboardInfo[9].reacts / leaderboardInfo[9].posts) * 100) / 100],
-                fill: true,
-                borderColor: 'rgb(255, 255, 51)',
-                tension: 0.1,
-            }]
-        };
+        // const chartData = {
+        //     labels: [leaderboardInfo[0].userName, leaderboardInfo[1].userName, leaderboardInfo[2].userName, leaderboardInfo[3].userName, leaderboardInfo[4].userName, leaderboardInfo[5].userName, leaderboardInfo[6].userName, leaderboardInfo[7].userName, leaderboardInfo[8].userName, leaderboardInfo[9].userName],
+        //     datasets: [{
+        //         data: [Math.round((leaderboardInfo[0].reacts / leaderboardInfo[0].posts) * 100) / 100, Math.round((leaderboardInfo[1].reacts / leaderboardInfo[1].posts) * 100) / 100, Math.round((leaderboardInfo[2].reacts / leaderboardInfo[2].posts) * 100) / 100, Math.round((leaderboardInfo[3].reacts / leaderboardInfo[3].posts) * 100) / 100, Math.round((leaderboardInfo[4].reacts / leaderboardInfo[4].posts) * 100) / 100, Math.round((leaderboardInfo[5].reacts / leaderboardInfo[5].posts) * 100) / 100, Math.round((leaderboardInfo[6].reacts / leaderboardInfo[6].posts) * 100) / 100, Math.round((leaderboardInfo[7].reacts / leaderboardInfo[7].posts) * 100) / 100, Math.round((leaderboardInfo[8].reacts / leaderboardInfo[8].posts) * 100) / 100, Math.round((leaderboardInfo[9].reacts / leaderboardInfo[9].posts) * 100) / 100],
+        //         fill: true,
+        //         borderColor: 'rgb(255, 255, 51)',
+        //         tension: 0.1,
+        //     }]
+        // };
 
-        const chart = {
-            type: 'bar',
-            data: chartData,
-            options: {},
-        }
+        // const chart = {
+        //     type: 'bar',
+        //     data: chartData,
+        //     options: {},
+        // }
 
-        const encodedChart = encodeURIComponent(JSON.stringify(chart));
-        const chartUrl = `https://quickchart.io/chart?c=${encodedChart}`;
+        // const encodedChart = encodeURIComponent(JSON.stringify(chart));
+        // const chartUrl = `https://quickchart.io/chart?c=${encodedChart}`;
 
         //Create Leaderboard Embed
         //let weightedPoints = (profileInfo.reacts / profileInfo.posts)
@@ -62,7 +62,7 @@ module.exports = class SlashLeaderboard extends Interaction {
                 },
             )
             .setFooter({ text: 'Leaderboard', iconURL: 'https://i.ibb.co/ynn8cws/Logo.jpg' })
-            .setImage(chartUrl)
+            //.setImage(chartUrl)
             .setTimestamp();
 
 
