@@ -12,6 +12,7 @@ module.exports = class interactionCreate extends Event {
         if (interaction.isCommand()) return this.client.emit('slashCommands', interaction, data);
         /* User commands (when right click on an username) */
         if (interaction.isContextMenu()) return this.client.emit('slashCommands', interaction, data);
+        if (interaction.isModalSubmit()) return this.client.emit('modalSubmit', interaction, data);
 
         //Reaction Menu
             const member = await interaction.guild.members.fetch({

@@ -16,6 +16,14 @@ module.exports = class messageCreate extends Event {
         const mentionRegPrefix = RegExp(`^<@!?${this.client.user.id}> `);
 
         let profileData;
+
+        if(message.channel.id === '1050546624285380618') {
+        
+            message.react('✅')
+            message.react('🚫')
+
+        }
+
         if (message.author.bot) return;
         profileData = await profileModel.findOne({ userID: message.author.id });
         if (!profileData) {
@@ -71,16 +79,6 @@ module.exports = class messageCreate extends Event {
                 )
             }
         }
-
-        //Still Working On This, It's To Filter Cook Channels
-        
-        // if(message.channel.id === '905673829534302210') {
-        
-        //     if (!message.content.includes("https://")) {
-        //           message.delete();
-        //           message.channel.send( { ephemeral: true, content: "Test" } )
-        //       }
-        // }
 
 
         /* If author is bot or if message isn't in guild return */
