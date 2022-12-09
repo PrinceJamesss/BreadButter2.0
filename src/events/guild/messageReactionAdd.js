@@ -37,7 +37,7 @@ module.exports = class messageReactionAdd extends Event {
     if (reaction.message.channel.id === '1050546624285380618') {
 
         if (reaction.emoji.name === '✅') {
-            conole.log(working)
+            console.log("working")
         }
 
 }
