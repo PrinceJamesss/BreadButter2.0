@@ -33,5 +33,13 @@ module.exports = class messageReactionAdd extends Event {
         this.client.logger.log(`There was just a reaction to (${reaction.message.author.tag}) Success Post!`, { tag: 'messageReactionAdd' });
             }
     }
+
+    if (reaction.message.channel.id === '1050546624285380618') {
+
+        if (reaction.emoji.name === '✅') {
+            conole.log(working)
+        }
+
+}
     }
 }
